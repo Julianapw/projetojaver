@@ -1,47 +1,17 @@
 package com.julianaferreira.dto;
 
-import java.math.BigDecimal;
-
-import jakarta.annotation.Nonnull;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
-
-@Entity
-@Table(name = "cliente")
 public class ClienteDto {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //define Id como chave primária
+
     private Long id;
-
-    @Nonnull
-    @Size(max = 100) //garante que o nome não pode ser nulo
     private String nome;
-
-    @Size(max = 15)
-    private String telefone; //limita o telefone a 15 caracteres
-
-    private Boolean correntista; //indica se o cliente possui uma conta no banco
-
-    private Float scoreCredito; //armazena o credito
-
-    @Column(name = "saldo_cc", precision = 15, scale = 2)
-    private BigDecimal saldoCc;
-
-    // Construtores
-    public ClienteDto() {
-    }
-
-    public ClienteDto(String nome, String telefone, Boolean correntista, Float scoreCredito, BigDecimal saldoCc) {
-        this.nome = nome;
-        this.telefone = telefone;
-        this.correntista = correntista;
-        this.scoreCredito = scoreCredito;
-        this.saldoCc = saldoCc; //recebe os dados do cliente
-    }
+    private Long telefone;
+    private Boolean correntista;
+    private Float scoreCredito;
+    private Float saldoCc;
 
     // Getters e Setters
     public Long getId() {
-        return id; //obter e definir o Id
+        return id;
     }
 
     public void setId(Long id) {
@@ -49,18 +19,18 @@ public class ClienteDto {
     }
 
     public String getNome() {
-        return nome; 
+        return nome;
     }
 
     public void setNome(String nome) {
         this.nome = nome;
     }
 
-    public String getTelefone() {
+    public Long getTelefone() {
         return telefone;
     }
 
-    public void setTelefone(String telefone) {
+    public void setTelefone(Long telefone) {
         this.telefone = telefone;
     }
 
@@ -69,7 +39,7 @@ public class ClienteDto {
     }
 
     public void setCorrentista(Boolean correntista) {
-        this.correntista = correntista; //verifica se o cliente é correntista
+        this.correntista = correntista;
     }
 
     public Float getScoreCredito() {
@@ -80,26 +50,13 @@ public class ClienteDto {
         this.scoreCredito = scoreCredito;
     }
 
-    public BigDecimal getSaldoCc() {
+    public Float getSaldoCc() {
         return saldoCc;
     }
 
-    public void setSaldoCc(BigDecimal saldoCc) {
+    // Quando definir saldoCc, calcula automaticamente o scoreCredito
+    public void setSaldoCc(Float saldoCc) {
         this.saldoCc = saldoCc;
+        this.scoreCredito = (saldoCc != null) ? saldoCc * 0.1f : 0f;
     }
-
-    // Método toString
-    @Override
-    public String toString() {
-        return "ClienteDto{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", telefone='" + telefone + '\'' +
-                ", correntista=" + correntista +
-                ", scoreCredito=" + scoreCredito +
-                ", saldoCc=" + saldoCc +
-                '}';
-    }
-
-   
 }

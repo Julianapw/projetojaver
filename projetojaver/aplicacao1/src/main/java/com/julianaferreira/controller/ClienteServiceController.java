@@ -1,61 +1,63 @@
 package com.julianaferreira.controller;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.service.connection.ConnectionDetailsNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.julianaferreira.dto.ClienteDto;
 import com.julianaferreira.service.ClienteDbClient;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("api1/clientes")
+@RequestMapping("/clientes")
 public class ClienteServiceController {
 
-    @Autowired
-    private ClienteDbClient clienteDbClient;
+    private final ClienteDbClient clienteDbClient;
 
-    // Criar cliente
+    public ClienteServiceController(ClienteDbClient clienteDbClient) {
+        this.clienteDbClient = clienteDbClient;
+    }
+
+    // Criar cliente (POST)
     @PostMapping
-    public ClienteDto criarCliente(@RequestBody ClienteDto cliente) {
-        // Usando BigDecimal para calcular scoreCredito
-        BigDecimal saldo = cliente.getSaldoCc(); // Assume que getSaldoCc retorna um BigDecimal
-        BigDecimal scoreCredito = saldo.multiply(BigDecimal.valueOf(0.1));
-        cliente.setScoreCredito(scoreCredito.floatValue()); // Convertendo para Float
-        return clienteDbClient.criarCliente(cliente);
-    }
-
-    // Obter cliente por ID com tratamento para cliente não encontrado
-    @GetMapping("/{id}")
-    public ClienteDto obterCliente(@PathVariable Long id) {
-        ClienteDto cliente = clienteDbClient.obterCliente(id);
-        if (cliente == null) {
-            throw new ConnectionDetailsNotFoundException("Cliente com ID " + id + " não encontrado");
+    public ResponseEntity<?> criarCliente(@RequestBody ClienteDto clienteDto) {
+        // Validação para saldo negativo ou null
+        if (clienteDto.getSaldoCc() == null || clienteDto.getSaldoCc() < 0) {
+            return ResponseEntity.badRequest().body("O saldo não pode ser negativo ou nulo.");
         }
-        return cliente;
+
+        // O cálculo do score já acontece no DTO
+        ClienteDto clienteCriado = clienteDbClient.criarCliente(clienteDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(clienteCriado);
     }
 
-    // Listar todos os clientes
+    // Buscar todos os clientes (GET)
     @GetMapping
-    public List<ClienteDto> listarClientes() {
-        return clienteDbClient.listarTodos();
+    public ResponseEntity<List<ClienteDto>> listarClientes() {
+        List<ClienteDto> clientes = clienteDbClient.listarTodos();
+        return ResponseEntity.ok(clientes);
     }
 
-    // Atualizar cliente por ID
+    // Atualizar cliente (PUT)
     @PutMapping("/{id}")
-    public ClienteDto atualizarCliente(@PathVariable Long id, @RequestBody ClienteDto cliente) {
-        // Usando BigDecimal para calcular scoreCredito
-        BigDecimal saldo = cliente.getSaldoCc();
-        BigDecimal scoreCredito = saldo.multiply(BigDecimal.valueOf(0.1));
-        cliente.setScoreCredito(scoreCredito.floatValue());
-        return clienteDbClient.atualizarCliente(id, cliente);
+    public ResponseEntity<?> atualizarCliente(@PathVariable Long id, @RequestBody ClienteDto clienteDto) {
+        // Garante que o ID seja atualizado corretamente
+        clienteDto.setId(id);
+
+        // Se o saldo for null ou negativo, retorna erro
+        if (clienteDto.getSaldoCc() == null || clienteDto.getSaldoCc() < 0) {
+            return ResponseEntity.badRequest().body("O saldo não pode ser negativo ou nulo.");
+        }
+
+        ClienteDto clienteAtualizado = clienteDbClient.atualizarCliente(id, clienteDto);
+        return ResponseEntity.ok(clienteAtualizado);
     }
 
-    // Deletar cliente por ID
+    // Deletar cliente (DELETE)
     @DeleteMapping("/{id}")
-    public void deletarCliente(@PathVariable Long id) {
+    public ResponseEntity<?> deletarCliente(@PathVariable Long id) {
         clienteDbClient.deletarCliente(id);
+        return ResponseEntity.ok("Cliente deletado com sucesso.");
     }
 }
