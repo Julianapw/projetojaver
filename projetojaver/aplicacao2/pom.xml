@@ -38,7 +38,14 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
-            <version>3.1.6</version> <!-- Adicionada a versão correta -->
+            <version>3.1.6</version>
+        </dependency>
+
+        <!-- Swagger / OpenAPI (Springdoc) -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.2.0</version>
         </dependency>
 
         <!-- H2 Database for testing -->
@@ -70,7 +77,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Thymeleaf for server-side templates (if using Thymeleaf for views) -->
+        <!-- Thymeleaf for server-side templates -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -87,7 +94,7 @@
 
     <build>
         <plugins>
-            <!-- Maven Compiler Plugin for processing annotation-based dependencies -->
+            <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -101,7 +108,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Spring Boot Maven Plugin for building and running Spring Boot applications -->
+            <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -116,5 +123,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

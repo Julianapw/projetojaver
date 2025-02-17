@@ -1,15 +1,13 @@
 package com.julianaferreira.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
-public class Cliente { //declara a clase cliente que sera armazenada no bd
+@Table(name = "clientes") // Define o nome da tabela no banco
+public class Cliente { 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //faz com que o bd gere um id automaticamente
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Gera o ID automaticamente
     private Long id;
 
     private String nome;
@@ -18,7 +16,7 @@ public class Cliente { //declara a clase cliente que sera armazenada no bd
     private Float scoreCredito;
     private Float saldoCc;
 
-    
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -64,6 +62,10 @@ public class Cliente { //declara a clase cliente que sera armazenada no bd
     }
 
     public void setSaldoCc(Float saldoCc) {
+        if (saldoCc < 0) {
+            throw new IllegalArgumentException("Saldo não pode ser negativo");
+        }
         this.saldoCc = saldoCc;
+        this.scoreCredito = saldoCc * 0.1f; // Atualiza automaticamente o score de crédito
     }
 }
