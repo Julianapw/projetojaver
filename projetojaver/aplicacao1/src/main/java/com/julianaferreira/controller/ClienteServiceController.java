@@ -27,7 +27,6 @@ public class ClienteServiceController {
             return ResponseEntity.badRequest().body("O saldo não pode ser negativo ou nulo.");
         }
 
-        // O cálculo do score já acontece no DTO
         ClienteDto clienteCriado = clienteDbClient.criarCliente(clienteDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(clienteCriado);
     }
@@ -42,10 +41,9 @@ public class ClienteServiceController {
     // Atualizar cliente (PUT)
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarCliente(@PathVariable Long id, @RequestBody ClienteDto clienteDto) {
-        // Garante que o ID seja atualizado corretamente
-        clienteDto.setId(id);
+        clienteDto.setId(id); // Garante que o ID seja atualizado corretamente
 
-        // Se o saldo for null ou negativo, retorna erro
+        // Validação para saldo negativo ou null
         if (clienteDto.getSaldoCc() == null || clienteDto.getSaldoCc() < 0) {
             return ResponseEntity.badRequest().body("O saldo não pode ser negativo ou nulo.");
         }
@@ -56,8 +54,26 @@ public class ClienteServiceController {
 
     // Deletar cliente (DELETE)
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletarCliente(@PathVariable Long id) {
+    public ResponseEntity<Void> deletarCliente(@PathVariable Long id) {
         clienteDbClient.deletarCliente(id);
-        return ResponseEntity.ok("Cliente deletado com sucesso.");
+        return ResponseEntity.noContent().build();
     }
+
+    // Buscar clientes (GET) com filtro opcional por nome
+    @GetMapping("/buscar")
+    public ResponseEntity<List<ClienteDto>> buscarClientes(@RequestParam(required = false) long nome) {
+        List<ClienteDto> clientes = clienteDbClient.buscarClientes(nome);
+        return ResponseEntity.ok(clientes);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteDto> obterCliente(@PathVariable Long id) {
+        ClienteDto cliente = clienteDbClient.obterCliente(id);
+        return ResponseEntity.ok(cliente);
+    }
+             
+  
 }
+
+
+    

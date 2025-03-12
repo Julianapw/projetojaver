@@ -1,7 +1,9 @@
 package com.julianaferreira.model;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Entity
 @Table(name = "clientes") // Define o nome da tabela no banco
 public class Cliente { 
@@ -15,6 +17,12 @@ public class Cliente {
     private Boolean correntista;
     private Float scoreCredito;
     private Float saldoCc;
+
+
+
+    public Cliente(String string, String string2, Object object, int i) {
+        
+    }
 
     // Getters e Setters
     public Long getId() {

@@ -5,25 +5,24 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import com.julianaferreira.dto.ClienteDto;
 
-@FeignClient(name = "clienteDbService", url = "http://localhost:8081/clientes") // declara cliente feign para chamar APIs externas
+@FeignClient(name = "clienteDbService", url = "http://localhost:8081/clientes")
 public interface ClienteDbClient {
 
     @GetMapping
-    List<ClienteDto> listarTodos(); // envia requisição get e retorna cliente DTO
+    List<ClienteDto> listarTodos();
 
     @GetMapping("/{id}")
-    ClienteDto obterCliente(@PathVariable Long id); // envia requisição get para buscar um id específico
+    ClienteDto obterCliente(@PathVariable("id") Long id);
 
     @PostMapping
-    ClienteDto criarCliente(@RequestBody ClienteDto cliente); // envia post com um json e retorna cliente criado
+    ClienteDto criarCliente(@RequestBody ClienteDto cliente);
 
     @PutMapping("/{id}")
-    ClienteDto atualizarCliente(@PathVariable Long id, @RequestBody ClienteDto cliente); // envia requisição put com dados do cliente no corpo da requisição
+    ClienteDto atualizarCliente(@PathVariable("id") Long id, @RequestBody ClienteDto cliente);
 
     @DeleteMapping("/{id}")
-    void deletarCliente(@PathVariable("id") Long id); // envia requisição delete para remover o cliente
+    void deletarCliente(@PathVariable("id") Long id);
 
     @GetMapping("/buscar")
-    List<ClienteDto> buscarClientes(
-    );
+    List<ClienteDto> buscarClientes(@RequestParam(required = false) long nome);
 }

@@ -4,10 +4,43 @@ public class ClienteDto {
 
     private Long id;
     private String nome;
+    private String email;
     private Long telefone;
     private Boolean correntista;
     private Float scoreCredito;
     private Float saldoCc;
+
+    // Construtor padrão necessário para serialização/deserialização
+    public ClienteDto() {
+        // Inicialização padrão, se necessário
+    }
+
+    // Construtor completo
+    public ClienteDto(Long id, String nome, String email, Long telefone, Boolean correntista, Float saldoCc) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.telefone = telefone;
+        this.correntista = correntista;
+        this.saldoCc = saldoCc;
+        this.scoreCredito = calcularScoreCredito(saldoCc);
+    }
+
+    public ClienteDto(String string, String string2, boolean b, int i) {
+        
+    }
+
+    public ClienteDto(String string, String string2, Object object, int i) {
+        
+    }
+
+    // Método para calcular o score de crédito
+    private Float calcularScoreCredito(Float saldoCc) {
+        if (saldoCc == null) {
+            return 0f;
+        }
+        return saldoCc * 0.1f;
+    }
 
     // Getters e Setters
     public Long getId() {
@@ -24,6 +57,14 @@ public class ClienteDto {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Long getTelefone() {
@@ -54,9 +95,9 @@ public class ClienteDto {
         return saldoCc;
     }
 
-    // Quando definir saldoCc, calcula automaticamente o scoreCredito
     public void setSaldoCc(Float saldoCc) {
         this.saldoCc = saldoCc;
-        this.scoreCredito = (saldoCc != null) ? saldoCc * 0.1f : 0f;
+        this.scoreCredito = calcularScoreCredito(saldoCc); // Atualiza o score quando o saldo é alterado
     }
+
 }
